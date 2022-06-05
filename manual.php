@@ -1,5 +1,7 @@
 <?php
+use classes\Init;
 require_once('conf/access.php');
+require_once('classes/boot.php');
 if(!isset($_GET['secret_token']) || empty($_GET['secret_token'])){
   header('HTTP/1.0 403 Forbidden');
   exit;
@@ -9,30 +11,16 @@ if(!isset($_GET['secret_token']) || empty($_GET['secret_token'])){
     exit;
   }
 }
-require_once('conf/access.php');
-$username = $_ENV['USER'];
+$boot = new Init;
  ini_set('display_errors', '1');
- $enlace = mysqli_connect($_ENV['DB_HOST'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
 
-mysqli_set_charset($enlace, "utf8");
 $mensaje="";
 if(isset($_POST['enviar'])){
-			$id = mysqli_real_escape_string($enlace, $_POST['tweet']['id']);
-			$texto= mysqli_real_escape_string($enlace, $_POST['tweet']['texto']);
-			$nret = mysqli_real_escape_string($enlace, $_POST['tweet']['rt']);
-			$nfav = mysqli_real_escape_string($enlace, $_POST['tweet']['fav']);
-			if(!isset($_POST['foto'])){
-				$tienefoto=mysqli_real_escape_string($enlace, $_POST['tweet']['url']);
-			}else{
-				$tienefoto="no";
-			}
-
-			$query="INSERT INTO `".$_ENV['DB_TABLE']."` (`id_tweet`, `usuario`,`texto`, `nret`, `nfav`, `urlimagen`) VALUES ('$id','$username','$texto','$nret','$nfav','$tienefoto')";
-			if ($resultado = mysqli_query($enlace, $query)or die(mysqli_error($enlace))) {
-			$mensaje="Modificado con éxito";
-			}else{
-				$mensaje="Error";
-			}
+    if(!$boot->insert($_POST)){
+      echo "hubo un error,probablemente ese id ya se haya insertado";
+    }else{
+      echo "insertado correctamente";
+    }
 }
 
 	
@@ -51,7 +39,7 @@ if(isset($_POST['enviar'])){
 
 <div class="container">
   <h2>Manualmente un tweet no registrado</h2>
-  <form action="manual.php" method="POST">
+  <form action="manual.php?secret_token=<?php echo $_GET['secret_token'];?>" method="POST">
     <div class="form-group">
       <label for="id">id</label>
       <input type="number" class="form-control" id="id" placeholder="Id tweet" name="tweet[id]">
@@ -73,7 +61,7 @@ if(isset($_POST['enviar'])){
       <input type="text" class="form-control" id="url"  placeholder="Url de la foto del tweet" name="tweet[url]">
     </div>
     <div class="checkbox">
-      <label><input onchange="cambiaDocu(this)" type="checkbox" name="foto">Tiene foto</label>
+      <label><input value="1" onchange="cambiaDocu(this)" type="checkbox" name="foto">Tiene foto</label>
     </div>
      <div class="text-right">
     <button type="submit" style="margin: 0 auto;" name="enviar" class="btn btn-default">Submit</button>

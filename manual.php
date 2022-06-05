@@ -1,0 +1,95 @@
+<?php
+require_once('conf/access.php');
+if(!isset($_GET['secret_token']) || empty($_GET['secret_token'])){
+  header('HTTP/1.0 403 Forbidden');
+  exit;
+}else{
+   if($_GET['secret_token'] !== $_ENV['secret_token']){
+    header('HTTP/1.0 403 Forbidden');
+    exit;
+  }
+}
+require_once('conf/access.php');
+$username = $_ENV['USER'];
+ ini_set('display_errors', '1');
+ $enlace = mysqli_connect($_ENV['DB_HOST'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
+
+mysqli_set_charset($enlace, "utf8");
+$mensaje="";
+if(isset($_POST['enviar'])){
+			$id = mysqli_real_escape_string($enlace, $_POST['tweet']['id']);
+			$texto= mysqli_real_escape_string($enlace, $_POST['tweet']['texto']);
+			$nret = mysqli_real_escape_string($enlace, $_POST['tweet']['rt']);
+			$nfav = mysqli_real_escape_string($enlace, $_POST['tweet']['fav']);
+			if(!isset($_POST['foto'])){
+				$tienefoto=mysqli_real_escape_string($enlace, $_POST['tweet']['url']);
+			}else{
+				$tienefoto="no";
+			}
+
+			$query="INSERT INTO `".$_ENV['DB_TABLE']."` (`id_tweet`, `usuario`,`texto`, `nret`, `nfav`, `urlimagen`) VALUES ('$id','$username','$texto','$nret','$nfav','$tienefoto')";
+			if ($resultado = mysqli_query($enlace, $query)or die(mysqli_error($enlace))) {
+			$mensaje="Modificado con éxito";
+			}else{
+				$mensaje="Error";
+			}
+}
+
+	
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <title>Manualmente</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>Manualmente un tweet no registrado</h2>
+  <form action="manual.php" method="POST">
+    <div class="form-group">
+      <label for="id">id</label>
+      <input type="number" class="form-control" id="id" placeholder="Id tweet" name="tweet[id]">
+    </div>
+    <div class="form-group">
+      <label for="texto">Texto:</label>
+      <textarea class="form-control" id="texto" placeholder="Texto del tweet" name="tweet[texto]"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="rt">Número de retweet</label>
+      <input type="number" class="form-control" id="rt" placeholder="Rt del tweet" name="tweet[rt]">
+    </div>
+    <div class="form-group">
+      <label for="fav">Número de fav</label>
+      <input type="number" class="form-control" id="fav" placeholder="Fav del tweet" name="tweet[fav]">
+    </div>
+    <div id="divfoto" style="display: none;" class="form-group">
+      <label for="url">URL foto</label>
+      <input type="text" class="form-control" id="url"  placeholder="Url de la foto del tweet" name="tweet[url]">
+    </div>
+    <div class="checkbox">
+      <label><input onchange="cambiaDocu(this)" type="checkbox" name="foto">Tiene foto</label>
+    </div>
+     <div class="text-right">
+    <button type="submit" style="margin: 0 auto;" name="enviar" class="btn btn-default">Submit</button>
+    </div>
+  </form>
+  <p><?php echo $mensaje; ?></p>
+</div>
+<script type="text/javascript">
+	function cambiaDocu(x){
+  if(!x.checked){
+    document.getElementById("divfoto").style.display="none";
+  }else{
+    document.getElementById("divfoto").style.display="block";
+  }
+}
+
+</script>
+</body>
+</html>

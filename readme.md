@@ -23,3 +23,5 @@ Explico que debe sustituirse en el archivo de configuración:
 | OAUTH_SECRET    | Key de twitter      |
 | USER    | User de twitter que quieres que se busque     |
 | secret_token    | Token secreto para acceder al archivo manual |
+###### Aclaración
+Esta librería solo busca entre tus últimos tweets, para ello es necesario ejecutar el fichero **busquedanuevos.php** ,en caso de que se le especifique el id de un tweet busquedanuevos.php?id=idtweet buscará a partir de ese tweet. Actualmente la api de twitter no permite la busqueda mínima por retweets, para ello está el apartado de manual ya que el sistema de búsqueda de la web si permite realizar esta consulta **(from:twitterUsername) min_retweets:10 -filter:retweets**

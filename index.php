@@ -36,7 +36,6 @@ ini_set('display_errors', '1');
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
@@ -94,64 +93,50 @@ ini_set('display_errors', '1');
   </div>
 </div>
 
-<div class="container">
+<div id="container" class="container">
   <h2>Los 20 mejores tweets de <a href="https://twitter.com/<?php echo $boot->username;?>">@<?php echo $boot->username;?></a></h2>
   <br>
-  <div class="list-group">
-  <table id="example" class="display" style="width:100%">
+  <section class="list-group">
+<!--   <table id="example" class="display" style="width:100%">
     <thead>
     <tr><th></th></tr>  
   </thead>
-  <tbody>
+  <tbody> -->
     <?php 
     //Con array rand cojo 2 entradas aleatorias aunque solo voy a usar una
     $guardoanterior = 0;
 
     while ($fila = $resultado->fetch()) {
-
-
-        if($fila["urlimagen"] == "no"){
-          $foto="";
-          $textofinal = $fila["texto"];
-        }else{
-          $foto=$fila["urlimagen"];
-          $limpiatexto = str_replace("https://t.co/", "", $fila["texto"]);
-        /*elimino los 10 ultimos caracteres que corresponden a los parametros de la url que he quitado antes, el 0 es para que mantenga el resto del tweet pero elimine lo último(que casi siempre son 10 caracteres)*/
-        $textofinal = substr($limpiatexto,0, -10);
-        }
-
-    echo "<tr>
+    echo '<div class="tw-tweets" twitterID="'.$fila["id_tweet"].'">
     
-    <td>";  
-    echo '<blockquote class="twitter-tweet tw-align-center" data-theme="light">
-    <a href="https://twitter.com/'.$boot->username.'/status/'.$fila["id_tweet"].'"></a>
-    </blockquote> ';
-    echo "</td>
-    </tr>";
+    </div>';  
   
      
       
     }//fin while
 
     ?>
-    </tbody>
-    </table>
-</div>
+ <!--   </tbody>
+    </table>-->
+</section>
 </div>
 <style>#forkongithub a{background:#000;color:#fff;text-decoration:none;font-family:arial,sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#c11;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:fixed;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;z-index:9999;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a target="_blank" href="https://github.com/C1b3r/fovstar">Fork me on GitHub</a></span>
 
-<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js" charset="utf-8"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js" charset="utf-8"></script> -->
+<script id="twitter-wjs" type="text/javascript" defer src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script type="text/javascript" defer src="script.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js" charset="utf-8"></script> 
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js" charset="utf-8"></script>  -->
 <script>
 //   $(document).ready(function () {
 //     $('#example').DataTable();
 // });
 
-setTimeout(function() {
+// setTimeout(function() {
 
-  document.getElementById("loader").classList.add("hide-loader");
-  }, 4000);
+//   document.getElementById("loader").classList.add("hide-loader");
+//   }, 4000);
+
+
 </script>
 
 </body>
